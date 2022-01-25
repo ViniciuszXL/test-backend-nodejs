@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "outDir": "dist",
+        "target": "es2017",
+        "module": "commonjs",
+        "types": [ "jest" ]
+    },
+    "exclude": [
+        "**/*.test.ts",
+        "**/*.test.js"
+    ],
+}
