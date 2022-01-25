@@ -1,0 +1,5 @@
+# Módulos do Node #
+node_modules
+
+# Arquivos compilados #
+dist
