@@ -2,25 +2,15 @@
     "name": "catalog-rest-api",
     "version": "0.0.2",
     "description": "RESTAPI para gerenciamento de catálogo de produtos",
-    "main": "main.ts",
+    "main": "main.js",
     "scripts": {
         "start": "npm install -y; tsc; node dist/main.js",
         "start-cluster": "npm install -y; tsc; pm2 start dist/main.js -i 0",
         "start-nodemon": "npm install -y; tsc; nodemon dist/main.js",
         "build": "tsc",
         "build-watcih": "tsc -w",
-        "test": "jest --verbose --runInBand"
+        "test": "jest --verbose --runInBand --detectOpenHandles"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/ViniciuszXL/test-backend-nodejs.git"
-    },
-    "author": "Marcus Vinícius",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/ViniciuszXL/test-backend-nodejs/issues"
-    },
-    "homepage": "https://github.com/ViniciuszXL/test-backend-nodejs#readme",
     "jest": {
         "testEnvironment": "node",
         "transform": {
@@ -33,6 +23,16 @@
             "js"
         ]
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ViniciuszXL/test-backend-nodejs.git"
+    },
+    "author": "Marcus Vinícius",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ViniciuszXL/test-backend-nodejs/issues"
+    },
+    "homepage": "https://github.com/ViniciuszXL/test-backend-nodejs#readme",
     "dependencies": {
         "dotenv": "^14.3.0",
         "mongoose": "^6.1.8",
@@ -41,12 +41,12 @@
         "restify-cors-middleware": "^1.1.1"
     },
     "devDependencies": {
+        "@babel/plugin-proposal-class-properties": "^7.16.7",
+        "@babel/plugin-transform-runtime": "^7.16.10",
         "@babel/preset-env": "^7.16.11",
         "babel-jest": "^27.4.6",
-        "babel-plugin-transform-class-properties": "^6.24.1",
+        "babel-plugin-transform-runtime": "^6.23.0",
         "jest": "^27.4.7",
-        "supertest": "^6.2.2",
-        "ts-jest": "^27.1.3",
-        "typescript": "^4.5.5"
+        "supertest": "^6.2.2"
     }
 }
