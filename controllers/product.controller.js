@@ -2,9 +2,15 @@ import { Product } from '../models/product.model.js'
 import RouterCommon from '../common/router.common.js';
 import environments from '../common/environments.js';
 
+// Lists //
+import FullProductsList from './products/full.product.controller.js';
+
 export default function ProductController() {
 
     const routerCommon = new RouterCommon();
+
+    // Lists //
+    const fullProductsList = new FullProductsList();
 
     async function create(req, res) {
         try {
@@ -31,13 +37,14 @@ export default function ProductController() {
         }
     }
 
-    async function get(req, res) {
+    async function get(req, res, options = {}) {
         try {
+            const { redis } = options;
             const { title, categoryId } = req.query;
 
             // Busca por título e categoria //
             if (title && categoryId) {
-                const products = await Product.find({ $and: [{ title: title }, { categoryId: categoryId }]})
+                const products = await fullProductsList.search(title, categoryId);
                 return routerCommon.sendResponse(res, { success: true, data: products })
             }
 

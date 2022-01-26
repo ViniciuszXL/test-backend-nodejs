@@ -8,8 +8,8 @@ export default function productRouterCommon() {
         return await controller.create(req, res);
     }
 
-    async function list(req, res, next) {
-        return await controller.get(req, res);
+    async function list(req, res, next, options = {}) {
+        return await controller.get(req, res, options);
     }
 
     return {

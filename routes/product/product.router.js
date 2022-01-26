@@ -15,7 +15,7 @@ export default function productRouter() {
         server.post('/product', [ common.create ])
 
         // Rotas GET //
-        server.get('/product/search', [ common.list ])
+        server.get('/product/search', (req, res, next) => common.list(req, res, next, options))
     }
 
     return {
