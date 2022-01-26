@@ -38,9 +38,6 @@ export default function createCore() {
 
         // Ocorreu um erro ao iniciar a aplicação //
         .catch(console.log)
-
-        // Iniciando as rotas //
-        //routes().start({ mongo: mongoCon, redis: redisCon, server: _server });
     }
 
     function stop() {
