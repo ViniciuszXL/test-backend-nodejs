@@ -1,17 +1,16 @@
-import Product from '../models/product.model.js'
+import { Product } from '../models/product.model.js'
 import RouterCommon from '../common/router.common.js';
 import environments from '../common/environments.js';
 
 export default function ProductController() {
 
-    const product = new Product();
     const routerCommon = new RouterCommon();
 
     async function create(req, res) {
         try {
             const { title } = req.body;
 
-            const hasProduct = await product.findOne({ title: title });
+            const hasProduct = await Product.findOne({ title: title });
             if (hasProduct.length > 0) {
                 return routerCommon.sendResponse(res, {
                     code: environments.CODE.REQUEST,
@@ -20,7 +19,7 @@ export default function ProductController() {
                 })
             }
 
-            const _product = await product.create(req.body);
+            const _product = await Product.create(req.body);
             return routerCommon.sendResponse(res, { success: true, message: 'Produto criado com sucesso', data: _product })
         } catch (e) {
             return routerCommon.sendResponse(res, {
@@ -38,24 +37,24 @@ export default function ProductController() {
 
             // Busca por título e categoria //
             if (title && categoryId) {
-                const products = await product.find({ $and: [{ title: title }, { categoryId: categoryId }]})
+                const products = await Product.find({ $and: [{ title: title }, { categoryId: categoryId }]})
                 return routerCommon.sendResponse(res, { success: true, data: products })
             }
 
             // Busca por título //
             if (title) {
-                const products = await product.find({ title: title })
+                const products = await Product.find({ title: title })
                 return routerCommon.sendResponse(res, { success: true, data: products })
             }
 
             // Busca por categoria //
             if (categoryId) {
-                const products = await product.find({ categoryId: categoryId })
+                const products = await Product.find({ categoryId: categoryId })
                 return routerCommon.sendResponse(res, { success: true, data: products })
             }
 
             // Busca geral //
-            const products = await product.find();
+            const products = await Product.find();
             return routerCommon.sendResponse(res, { success: true, data: products });
         } catch (e) {
             return routerCommon.sendResponse(res, {
@@ -73,7 +72,7 @@ export default function ProductController() {
             const values = req.body;
 
             // Obtendo e atualizando no Mongo //
-            await product.findByIdAndUpdate(id, values);
+            await Product.findByIdAndUpdate(id, values);
             return routerCommon.sendResponse(res, { success: true, data: values })
         } catch (e) {
             return routerCommon.sendResponse(res, {
@@ -88,9 +87,20 @@ export default function ProductController() {
     async function del(req, res) {
         try {
             const { id } = req.params;
+            const _exists = await Product.findById(id);
+            if (_exists) {
+                return routerCommon.sendResponse(res, {
+                    code: environments.CODE.REQUEST,
+                    success: false,
+                    message: 'Esse produto não foi encontrado na base de dados.'
+                })
+            }
 
             // Removendo no Mongo //
-            await Product.findByIdAndRemove(id);
+            await Product.findByIdAndRemove({
+                _id: id
+            });
+
             return routerCommon.sendResponse(res, { success: true, message: 'Produto deletado com sucesso.' });
         } catch (e) {
             return routerCommon.sendResponse(res, {

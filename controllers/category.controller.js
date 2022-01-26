@@ -72,11 +72,20 @@ export default function CategoryController() {
 
     async function del(req, res) {
         try {
-            const { id } = req.query;
-            console.log(id);
+            const { id } = req.params;
+            const _exists = await Category.findById(id);
+            if (!_exists) {
+                return routerCommon.sendResponse(res, {
+                    code: environments.CODE.REQUEST,
+                    success: false,
+                    message: 'Essa categoria não foi encontrada na base de dados.'
+                })
+            }
 
             // Obtendo e removendo no Mongo //
-            await Category.findByIdAndRemove(id);
+            await Category.findByIdAndRemove({
+                _id: id
+            });
 
             // Atualizando os produtos //
             await Product.updateMany({ categoryId: { $in: id }}, {
