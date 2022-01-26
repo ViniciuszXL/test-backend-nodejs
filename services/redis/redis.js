@@ -1,35 +1,45 @@
-import redis, { RedisClient } from 'redis';
-import environments from '../../common/environments';
+import redis from 'redis';
+import environments from '../../common/environments.js';
 
 export default function createRedisConnection() {
 
     function start() {
-        return new Promise(async (resolve, reject) => {
-            console.log('> [redis_Service] Iniciando...');
-            
+        return new Promise(async(resolve, reject) => {
+            console.log('> [redis_service] Iniciando...');
+
             const { HOST, PORT } = environments.REDIS;
-            const URI = `redis://${HOST}:${PORT}`;
+            console.log(`> [redis_service] Conectando a ${HOST}:${PORT}`);
 
             try {
-                // Criando o cliente // 
-                const client = new RedisClient({ port: PORT, host: HOST });
+                // Criando o cliente //
+                const client = redis.createClient({ host: HOST, port: PORT });
 
                 // Conexão feita com sucesso //
-                client.on('connect', resolve);
+                client.on('connect', connection => {
+                    console.log('> [redis_service] Conexão feita com sucesso!')
+                    resolve(connection)
+                });
 
                 // Ocorreu um erro na conexão //
                 client.on('error', (e) => {
                     reject(e)
-                    throw new Error(e)
+                    console.log('> [redis_service] Ocorreu um erro ao iniciar a conexão')
+                    console.log(e);
                 });
             } catch (e) {
+                console.log(e);
                 throw new Error(e);
             }
         });
     }
 
-    function stop(redis) {
+    function stop(options = {}) {
         return new Promise((resolve, reject) => {
+            const { redis } = options;
+            if (!redis) {
+                throw new Error('> [redis_service] Conexão com o Redis não informada! Cancelando desconexão...');
+            }
+
             try {
                 redis.quit();
                 resolve(true);

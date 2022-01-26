@@ -1,4 +1,4 @@
-import createMongoConnection from './mongo';
+import createMongoConnection from './mongo.js';
 
 describe('CHECK - Mongo', () => {
     test('Deve ter os métodos #start e #stop', () => {
@@ -10,12 +10,11 @@ describe('CHECK - Mongo', () => {
 })
 
 describe('START - Mongo', () => {
-    test('Deve inicializar a conexão com o Mongo', () => {
+    test('Deve inicializar a conexão com o Mongo', async() => {
         const mongo = createMongoConnection();
 
-        expect(() => {
-            mongo.start();
-        }).not.toThrow();
+        const connection = await mongo.start({ isTest: true });
+        expect(connection).not.toThrow();
     });
 });
 
