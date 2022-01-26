@@ -1,14 +1,13 @@
 {
+    "type": "module",
     "name": "catalog-rest-api",
     "version": "0.0.2",
     "description": "RESTAPI para gerenciamento de catálogo de produtos",
     "main": "main.js",
     "scripts": {
-        "start": "npm install -y; tsc; node dist/main.js",
-        "start-cluster": "npm install -y; tsc; pm2 start dist/main.js -i 0",
-        "start-nodemon": "npm install -y; tsc; nodemon dist/main.js",
-        "build": "tsc",
-        "build-watcih": "tsc -w",
+        "start": "node main.js",
+        "start-cluster": "pm2 start main.js -i 0",
+        "start-nodemon": "nodemon main.js",
         "test": "jest --verbose --runInBand --detectOpenHandles"
     },
     "jest": {
@@ -34,8 +33,12 @@
     },
     "homepage": "https://github.com/ViniciuszXL/test-backend-nodejs#readme",
     "dependencies": {
+        "core.js": "^0.4.2",
         "dotenv": "^14.3.0",
+        "main.js": "^0.0.1",
         "mongoose": "^6.1.8",
+        "node": "^17.4.0",
+        "nodemon": "^2.0.15",
         "redis": "^3.1.2",
         "restify": "^8.6.0",
         "restify-cors-middleware": "^1.1.1"
@@ -44,6 +47,12 @@
         "@babel/plugin-proposal-class-properties": "^7.16.7",
         "@babel/plugin-transform-runtime": "^7.16.10",
         "@babel/preset-env": "^7.16.11",
+        "@types/jest": "^27.4.0",
+        "@types/mongoose": "^5.11.97",
+        "@types/node": "^17.0.12",
+        "@types/restify": "^8.5.4",
+        "@types/restify-cors-middleware": "^1.0.2",
+        "@types/supertest": "^2.0.11",
         "babel-jest": "^27.4.6",
         "babel-plugin-transform-runtime": "^6.23.0",
         "jest": "^27.4.7",
