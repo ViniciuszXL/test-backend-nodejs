@@ -1,5 +1,6 @@
 import indexRouter from './index.router.js';
 import categoryRouter from './category/category.router.js'
+import productRouter from './product/product.router.js';
 
 export default function routes() {
 
@@ -8,7 +9,7 @@ export default function routes() {
             console.log('> [routes] Iniciando as rotas...');
 
             try {
-                const routes = [ indexRouter(), categoryRouter() ]
+                const routes = [ indexRouter(), categoryRouter(), productRouter() ]
                 for (var router of routes) {
                     router.apply(options)
                     console.log(`> [routes] Rota '${router.getName()}' iniciada com sucesso!`)
