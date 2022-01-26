@@ -18,12 +18,12 @@ export default {
 
     REDIS: {
         ENABLE: process.env.REDIS_ENABLE || 1,
-        HOST: process.env.REDIS_HOST || '127.0.0.1',
+        HOST: process.env.REDIS_HOST || '10.1.30.31',
         PORT: process.env.REDIS_PORT || 6379,
     },
 
     MONGO: {
-        HOST: process.env.MONGO_HOST || '127.0.0.1',
+        HOST: process.env.MONGO_HOST || '10.1.30.31',
         DATABASE: process.env.MONGO_DATABASE || 'test',
         PORT: process.env.MONGO_PORT || 27017,
     }

@@ -18,3 +18,13 @@ describe('START - Mongo', () => {
         }).not.toThrow();
     });
 });
+
+describe('END - Mongo', () => {
+    test('Deve finalizar a conexão com o Mongo', () => {
+        const mongo = createMongoConnection();
+
+        expect(() => {
+            mongo.stop();
+        }).not.toThrow();
+    });
+});

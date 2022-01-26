@@ -3,45 +3,31 @@ import environment from '../../common/environments';
 
 export default function createMongoConnection() {
 
-    function start() {
-        console.log('> [mongo_service] Iniciando...');
+    function start(database) {
+        return new Promise(async (resolve, reject) => {
+            console.log('> [mongo_service] Iniciando...');
 
-        const { HOST, PORT, DATABASE } = environment.MONGO;
-        const URI = `mongodb://${HOST}:${PORT}/${DATABASE}`;
+            const { HOST, PORT, DATABASE } = environment.MONGO;
+            const URI = `mongodb://${HOST}:${PORT}/${ database || DATABASE }`;
 
-        console.log(URI);
-
-        const initConnection = () => {
-            return new Promise(async(resolve, reject) => {
-                try {
-                    const connection = await mongoose.connect(URI);
-                    resolve(connection);
-                } catch (e) {
-                    reject(e);
-                }
-            });
-        }
-
-        // Iniciando a conexão //
-        initConnection()
-
-        // Conexão bem sucedida
-        .then(() => {
-            console.log('> [mongo_service] Inicio finalizado! Sistema rodando.')
-        })
-
-        // Ocorreu um erro na conexão //
-        .catch(err => {
-            throw new Error(err);
+            try {
+                const connection = await mongoose.connect(URI);
+                resolve(connection);
+            } catch (e) {
+                throw new Error(e)
+            }
         });
     }
 
     function stop() {
         console.log('> [mongo_service] Desligando...');
 
-        // dependencies, databases, routes, servers, etc //
-
-        console.log('> [mongo_service] Desligamento finalizado!');
+        try {
+            mongoose.connection.close();
+            console.log('> [mongo_service] Desligamento finalizado!');
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 
     return {
