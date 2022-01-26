@@ -15,9 +15,9 @@ export default function createRedisConnection() {
                 const client = redis.createClient({ host: HOST, port: PORT });
 
                 // Conexão feita com sucesso //
-                client.on('connect', connection => {
+                client.on('connect', () => {
                     console.log('> [redis_service] Conexão feita com sucesso!')
-                    resolve(connection)
+                    resolve(client)
                 });
 
                 // Ocorreu um erro na conexão //
