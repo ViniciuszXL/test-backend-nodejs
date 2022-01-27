@@ -18,6 +18,11 @@ const schema = new mongoose.Schema({
         ref: 'categories',
         required: true
     }
+}, {
+    timestamps: {
+        createdAt: true,
+        updatedAt: true
+    }
 });
 
 export const Product = mongoose.model('products', schema);
