@@ -28,7 +28,11 @@ export default {
 
         KEY: {
             PRODUCT: {
-                CACHE: '#PRODUCT_CACHE_'
+                CACHE: {
+                    TITLE: '#PRODUCT_TITLE_',
+                    CATEGORY: '#PRODUCT_CATEGORY_',
+                    ALL: "#PRODUCT_ALL"
+                }
             }
         }
     },

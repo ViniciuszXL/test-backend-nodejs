@@ -3,6 +3,7 @@ export default function RouterCommon() {
     function sendResponse(res, options = {}) {
         try {
             const { code, success } = options;
+
             if (success == undefined) {
                 throw new Error('Não foi informado se a requisição foi bem sucedida.')
             }
@@ -12,7 +13,7 @@ export default function RouterCommon() {
             }
 
             options.code = undefined;
-            return !success ? res.send(code, options, { 'Content-Type': "application/json" }) : res.json(options);
+            return res.status(success ? 200 : code).json(options)
         } catch (e) {
             throw new Error(e);
         }
