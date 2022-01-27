@@ -24,7 +24,6 @@ export default function createRedisConnection() {
                 client.on('error', (e) => {
                     reject(e)
                     console.log('> [redis_service] Ocorreu um erro ao iniciar a conexão')
-                    console.log(e);
                 });
             } catch (e) {
                 console.log(e);
