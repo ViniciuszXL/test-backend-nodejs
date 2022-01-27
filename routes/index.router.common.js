@@ -4,6 +4,7 @@ export default function indexRouterCommon() {
         return res.json({
             "success": true,
             "version": "1.0.0",
+            "description": "RESTAPI de catálogo de produtos do desafio da AnotaAí",
             "routes": {
                 "category": '/category',
                 "products": '/products'

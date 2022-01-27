@@ -1,4 +1,5 @@
 import productRouterCommon from "./product.router.common.js";
+import express from 'express'
 
 export default function productRouter() {
 
@@ -8,18 +9,38 @@ export default function productRouter() {
         return "Product"
     }
 
-    function apply(options = {}) {
-        const { server } = options;
+    function getRoutes(options = {}) {
+        const route = express.Router();
 
         // Rotas POST //
-        server.post('/product', [ common.create ])
+        route.post('/product', async (req, res) => {
+            common.paramenters().create(req, res, async (err) => {
+                if (!err) {
+                    return await common.create(req, res);
+                }
+            })
+        })
 
         // Rotas GET //
-        server.get('/product/search', (req, res, next) => common.list(req, res, next, options))
+        route.get('/product/search', async (req, res) => await common.list(req, res, options))
+
+        // Rotas PUT //
+        route.put('/product', common.update)
+
+        // Rotas DEL //
+        route.delete('/product/:id', async (req, res) => {
+            common.paramenters().del(req, res, async (err) => {
+                if (!err) {
+                    return await common.del(req, res);
+                }
+            })
+        })
+
+        return route
     }
 
     return {
         getName,
-        apply
+        getRoutes
     }
 }

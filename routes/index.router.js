@@ -1,4 +1,5 @@
 import indexRouterCommon from "./index.router.common.js";
+import express from 'express';
 
 export default function indexRouter() {
 
@@ -8,15 +9,18 @@ export default function indexRouter() {
         return "Index"
     }
 
-    function apply(options = {}) {
-        const { server } = options;
+    function getRoutes(options = {}) {
+        // Route //
+        const route = express.Router();
 
         // Rotas GET //
-        server.get('/', [ common.get ])
+        route.get('/', [ common.get ])
+
+        return route;
     }
 
     return {
         getName,
-        apply
+        getRoutes
     }
 }

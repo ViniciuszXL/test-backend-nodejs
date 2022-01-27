@@ -1,4 +1,5 @@
 import categoryRouterCommon from "./category.router.common.js";
+import express from 'express'
 
 export default function categoryRouter() {
 
@@ -8,24 +9,26 @@ export default function categoryRouter() {
         return "Category"
     }
 
-    function apply(options = {}) {
-        const { server, redis, mongo } = options;
+    function getRoutes(options = {}) {
+        const route = express.Router();
 
         // Rotas POST //
-        server.post('/category', [ common.create ])
+        route.post('/category', [ common.create ])
 
         // Rotas GET //
-        server.get('/category', [ common.list ])
+        route.get('/category', [ common.list ])
 
         // Rotas PUT //
-        server.put('/category', [ common.update ])
+        route.put('/category', [ common.update ])
 
         // Rotas DEL //
-        server.del('/category/:id', [ common.del ])
+        route.delete('/category/:id', [ common.del ])
+
+        return route
     }
 
     return {
         getName,
-        apply
+        getRoutes
     }
 }

@@ -6,12 +6,13 @@ export default function routes() {
 
     function start(options = {}) {
         return new Promise((resolve, reject) => {
+            const { server } = options;
             console.log('> [routes] Iniciando as rotas...');
 
             try {
                 const routes = [ indexRouter(), categoryRouter(), productRouter() ]
                 for (var router of routes) {
-                    router.apply(options)
+                    server.use('/', router.getRoutes(options))
                     console.log(`> [routes] Rota '${router.getName()}' iniciada com sucesso!`)
                 }
 
