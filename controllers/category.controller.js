@@ -11,12 +11,14 @@ export default function CategoryController() {
     async function create(req, res) {
         try {
             const { name } = req.body;
-            const _exists = await Category.findOne({ name });
-            if (_exists) {
+
+            // Verificando se existe a categoria //
+            const hasCategory = await Category.findOne({ name });
+            if (hasCategory) {
                 return routerCommon.sendResponse(res, {
                     code: environments.CODE.REQUEST,
                     success: false,
-                    message: 'Categoria já existe'
+                    message: 'Categoria já existente'
                 })
             }
 
@@ -56,9 +58,22 @@ export default function CategoryController() {
         try {
             const { id } = req.query;
 
+            // Verificando se existe a categoria
+            const hasCategory = await Category.findOne({ _id: id })
+            if (!hasCategory) {
+                return routerCommon.sendResponse(res, {
+                    success: false,
+                    code: environments.CODE.REQUEST,
+                    message: 'Essa categoria não existe!'
+                })
+            }
+
             // Obtendo e atualizando no Mongo //
             await Category.findByIdAndUpdate(id, req.body);
-            return routerCommon.sendResponse(res, { success: true, data: req.body });
+
+            // Obtendo as novas informações //
+            const category = await Category.findOne({ _id: id });
+            return routerCommon.sendResponse(res, { success: true, data: category });
         } catch (e) {
             console.log(e)
             return routerCommon.sendResponse(res, {
@@ -73,12 +88,14 @@ export default function CategoryController() {
     async function del(req, res) {
         try {
             const { id } = req.params;
-            const _exists = await Category.findById(id);
-            if (!_exists) {
+
+            // Verificando se existe a categoria
+            const hasCategory = await Category.findById(id);
+            if (!hasCategory) {
                 return routerCommon.sendResponse(res, {
                     code: environments.CODE.REQUEST,
                     success: false,
-                    message: 'Essa categoria não foi encontrada na base de dados.'
+                    message: 'Categoria não encontrada no banco de dados.'
                 })
             }
 
@@ -87,12 +104,10 @@ export default function CategoryController() {
                 _id: id
             });
 
-            // Atualizando os produtos //
-            await Product.updateMany({ categoryId: { $in: id }}, {
-                $pull: { categoryId: id }
-            })
+            // Removendo os produtos da categoria //
+            await Product.deleteMany({ categoryId: id })
 
-            return routerCommon.sendResponse(res, { success: true, message: 'Categoria deletado com sucesso.' });
+            return routerCommon.sendResponse(res, { success: true, message: 'Categoria e seus produtos deletados com sucesso.' });
         } catch (e) {
             console.log(e)
             return routerCommon.sendResponse(res, {
