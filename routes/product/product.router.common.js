@@ -24,7 +24,7 @@ export default function productRouterCommon() {
         return await controller.del(req, res);
     }
 
-    function paramenters() {
+    function parameters() {
 
         function sendError(res, message) {
             return routerCommon.sendResponse(res, {
@@ -99,6 +99,6 @@ export default function productRouterCommon() {
         update,
         del,
 
-        paramenters
+        parameters
     }
 }

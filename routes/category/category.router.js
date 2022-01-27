@@ -13,7 +13,13 @@ export default function categoryRouter() {
         const route = express.Router();
 
         // Rotas POST //
-        route.post('/category', [ common.create ])
+        route.post('/category', async (req, res) => {
+            common.parameters().create(req, res, err => {
+                if (!err) {
+                    return common.create(req, res);
+                }
+            });
+        })
 
         // Rotas GET //
         route.get('/category', [ common.list ])

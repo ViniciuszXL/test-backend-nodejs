@@ -14,7 +14,7 @@ export default function productRouter() {
 
         // Rotas POST //
         route.post('/product', async (req, res) => {
-            common.paramenters().create(req, res, async (err) => {
+            common.parameters().create(req, res, async (err) => {
                 if (!err) {
                     return await common.create(req, res);
                 }
