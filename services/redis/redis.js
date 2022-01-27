@@ -35,6 +35,7 @@ export default function createRedisConnection() {
     function stop(options = {}) {
         return new Promise((resolve, reject) => {
             const { redis } = options;
+
             if (!redis) {
                 throw new Error('> [redis_service] Conexão com o Redis não informada! Cancelando desconexão...');
             }

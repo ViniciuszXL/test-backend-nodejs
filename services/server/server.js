@@ -38,7 +38,9 @@ export default function createServer() {
 
                 // Callbacks //
                 server.on('listening', () => {
-                    resolve(isTest ? () => {} : app)
+                    const dependencies = { app: app, server: server };
+                    resolve(isTest ? () => {} : dependencies)
+
                     console.log('> [server_service] Aplicação iniciada com sucesso!')
                 })
 
@@ -56,7 +58,7 @@ export default function createServer() {
 
     function stop(server) {
         return new Promise((resolve, reject) => {
-            //console.log('> [server_service] Desligando...');
+            console.log('> [server_service] Desligando...');
 
             try {
                 server.close();

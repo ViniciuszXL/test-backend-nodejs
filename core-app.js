@@ -7,43 +7,59 @@ export default function createCore() {
 
     const mongo = createMongoConnection();
     const redis = createRedisConnection();
-    const server = createServer();
+    const _server = createServer();
 
-    async function start() {
-        console.log('> [core] Iniciando...');
+    async function start(options = {}) {
+        return new Promise(async (resolve, reject) => {
+            console.log('> [core] Iniciando...');
 
-        // dependencies, databases, routes, servers, etc //
-        // Conexão com o MongoDB //
-        const mongoCon = await mongo.start();
+            // dependencies, databases, routes, servers, etc //
+            // Conexão com o MongoDB //
+            const mongoCon = await mongo.start(options);
 
-        // Conexão com o Redis //
-        const redisCon = await redis.start();
+            // Conexão com o Redis //
+            const redisCon = await redis.start();
 
-        // Iniciando a aplicação //
-        server.start()
+            // Iniciando a aplicação //
+            _server.start()
 
-        // Aplicação iniciada com sucesso //
-        .then(connection => {
-            const options = { mongo: mongoCon, redis: redisCon, server: connection }
+            // Aplicação iniciada com sucesso //
+            .then(connection => {
+                const { app, server } = connection;
+                const options = { mongo: mongoCon, redis: redisCon, server: server, webserver: _server, app: app }
 
-            // Iniciando as rotas //
-            routes().start(options)
+                // Iniciando as rotas //
+                routes().start(options)
 
-            // Inicialização das rotas feita com sucesso !
-            .then(console.log('> [core] Inicio do core finalizado! Sistema rodando.'))
+                // Inicialização das rotas feita com sucesso !
+                .then(() => {
+                    resolve(options);
+                    console.log('> [core] Inicio do core finalizado! Sistema rodando.')
+                })
 
-            // Ocorreu um erro ao inicializar as rotas //
-            .catch(console.log)
-        })
+                // Ocorreu um erro ao inicializar as rotas //
+                .catch(reject)
+            })
 
-        // Ocorreu um erro ao iniciar a aplicação //
-        .catch(console.log)
+            // Ocorreu um erro ao iniciar a aplicação //
+            .catch(reject)
+        });
     }
 
-    function stop() {
+    async function stop(options = {}) {
         console.log('> [core] Desligando...');
 
-        // dependencies, databases, routes, servers, etc //
+        const { mongo, redis, webserver, app } = options;
+
+        // Finalizand o servidor //
+        await webserver.stop(app);
+
+        // Finalizando o MongoDB //
+        mongo.stop();
+
+        // Finalizando o Redis //
+        redis.stop(options);
+
 
         console.log('> [core] Desligamento finalizado!');
     }

@@ -11,6 +11,7 @@
         "test": "jest --verbose --runInBand --detectOpenHandles"
     },
     "jest": {
+        "verbose": true,
         "testEnvironment": "node",
         "transform": {
             "^.+\\.[t|j]sx?$": "babel-jest"
@@ -19,7 +20,10 @@
         "moduleFileExtensions": [
             "ts",
             "tsx",
-            "js"
+            "js",
+            "jsx",
+            "json",
+            "node"
         ]
     },
     "repository": {
