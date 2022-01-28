@@ -7,7 +7,12 @@ export default function createRedisConnection() {
         return new Promise(async(resolve, reject) => {
             console.log('> [redis_service] Iniciando...');
 
-            const { HOST, PORT } = environments.REDIS;
+            const { HOST, PORT, ENABLE } = environments.REDIS;
+            if (ENABLE != 1) {
+                console.log('> [redis_service] Engine do redis está desabilitada. Abortando conexão')
+                return resolve(undefined)
+            }
+
             console.log(`> [redis_service] Conectando a ${HOST}:${PORT}`);
 
             try {
@@ -34,10 +39,10 @@ export default function createRedisConnection() {
 
     function stop(options = {}) {
         console.log('> [redis_service] Desligando...');
-        
+
         const { redis } = options;
         if (!redis) {
-            throw new Error('> [redis_service] Conexão com o Redis não informada! Cancelando desconexão...');
+            return console.log('> [redis_service] Conexão com o Redis não informada! Cancelando desconexão...')
         }
 
         try {

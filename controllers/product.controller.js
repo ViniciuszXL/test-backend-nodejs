@@ -7,6 +7,7 @@ export default function ProductController() {
 
     const routerCommon = new RouterCommon();
     const redisTools = new RedisTools();
+    const redisEnable = environments.REDIS.ENABLE != 1 ? false : true;
 
     async function create(req, res) {
         try {
@@ -45,16 +46,18 @@ export default function ProductController() {
                 const key = `${ALL}`;
 
                 // Buscando  no cache //
-                const cache = await redisTools.findCache(key, options);
-                if (cache != null) {
-                    return routerCommon.sendResponse(res, { success: true, data: JSON.parse(cache) });
+                if (redisEnable) {
+                    const cache = await redisTools.findCache(key, options);
+                    if (cache != null) {
+                        return routerCommon.sendResponse(res, { success: true, data: JSON.parse(cache) });
+                    }
                 }
 
                 // Buscando o produto por título //
                 const products = await Product.find({ $and: [{ title: title }, { categoryId: categoryId }]})
 
                 // Caso haja resultados, inserindo no cache para futuras requisições //
-                if (products) {
+                if (products && redisEnable) {
                     // Inserindo no cache de 30 segundos //
                     await redisTools.cache(options, key, products, 30);
                 }
@@ -67,16 +70,18 @@ export default function ProductController() {
                 const key = `${TITLE}${title.toUpperCase().replace(' ', '')}`
 
                 // Buscando no Cache //
-                const cache = await redisTools.findCache(key, options);
-                if (cache != null) {
-                    return routerCommon.sendResponse(res, { success: true, data: JSON.parse(cache) });
+                if (redisEnable) {
+                    const cache = await redisTools.findCache(key, options);
+                    if (cache != null) {
+                        return routerCommon.sendResponse(res, { success: true, data: JSON.parse(cache) });
+                    }
                 }
 
                 // Buscando o produto por título //
                 const products = await Product.find({ title: title })
 
                 // Caso haja resultados, inserindo no cache para futuras requisições //
-                if (products) {
+                if (products && redisEnable) {
                     // Inserindo no cache de 30 segundos //
                     await redisTools.cache(options, key, products, 30);
                 }
@@ -89,16 +94,18 @@ export default function ProductController() {
                 const key = `${CATEGORY}${categoryId}`
 
                 // Buscando no cache //
-                const cache = await redisTools.findCache(key, options);
-                if (cache != null) {
-                    return routerCommon.sendResponse(res, { success: true, data: JSON.parse(cache) });
+                if (redisEnable) {
+                    const cache = await redisTools.findCache(key, options);
+                    if (cache != null) {
+                        return routerCommon.sendResponse(res, { success: true, data: JSON.parse(cache) });
+                    }
                 }
 
                 // Buscando o produto por categoria //
                 const products = await Product.find({ categoryId: categoryId })
 
                 // Caso haja resultados, inserindo no cache para futuras requisições/
-                if (products) {
+                if (products && redisEnable) {
                     // Inserindo no cache de 30 segundos //
                     await redisTools.cache(options, key, products, 30);
                 }
