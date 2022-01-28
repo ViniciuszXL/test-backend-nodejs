@@ -27,10 +27,14 @@ const afterTests = () => {
 }
 
 
+// Inicio dos testes //
 beforeTests()
 
+// Iniciando os testes unitários //
 .then(() => jestCli.run())
 
+// Testes unitários concluídos, iniciando o stop dos serviços //
 .then(() => afterTests())
 
+// Ocorreu um erro ao fechar os serviços //
 .catch(console.log)

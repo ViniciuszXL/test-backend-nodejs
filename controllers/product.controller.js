@@ -23,6 +23,7 @@ export default function ProductController() {
                 })
             }
 
+            // Criando um novo produto //
             const _product = await Product.create(req.body);
             return routerCommon.sendResponse(res, { success: true, message: 'Produto criado com sucesso', data: _product })
         } catch (e) {
@@ -176,7 +177,6 @@ export default function ProductController() {
 
             // Removendo no Mongo //
             await Product.findByIdAndRemove({ _id: id });
-
             return routerCommon.sendResponse(res, { success: true, message: 'Produto deletado com sucesso.' });
         } catch (e) {
             console.log(e)

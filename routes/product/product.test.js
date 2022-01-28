@@ -15,29 +15,32 @@ describe('POST - Product', () => {
 
     test('Deve criar um produto', () => {
         return request(address)
-    
+
         // Método POST //
         .post('/category')
-    
+
         // Enviando o body //
         .send({ name: categoryName })
-    
+
         // Retornou com sucesso //
         .then(response => {
             categoryId = response.body.data._id
             return request(address)
 
+                // Método POST //
                 .post('/product')
 
+                // Enviando o body //
                 .send({ title: title, description: description, price: price, categoryId: categoryId })
 
+                // Retornou com sucesso //
                 .then(response => {
                     expect(response.statusCode).toBe(200)
 
                     // Body //
                     expect(response.body.success).toBeDefined()
                     expect(response.body.success).toBe(true)
-            
+
                     // Data //
                     expect(response.body.data.title).toBe(title)
                     expect(response.body.data.description).toBe(description)
@@ -52,10 +55,13 @@ describe('POST - Product', () => {
     test('Deve dar erro ao criar um produto duplicado', () => {
         return request(address)
 
+        // Método POST //
         .post('/product')
 
+        // Enviando o Body //
         .send({ title: title, description: description, price: price, categoryId: categoryId })
 
+        // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(400)
 
@@ -73,10 +79,10 @@ describe('GET - Product', () => {
 
     test('Deve tentar obter todos os produtos', () => {
         return request(address)
-    
+
         // Método GET //
         .get('/product')
-    
+
         // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(200)
@@ -84,7 +90,7 @@ describe('GET - Product', () => {
             // Body //
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(true)
-    
+
             // Data //
             expect(response.body.data).toBeInstanceOf(Array);
         })
@@ -92,13 +98,13 @@ describe('GET - Product', () => {
 
     test('Deve tentar obter o produto pelo titulo', () => {
         return request(address)
-    
+
         // Método GET //
         .get('/product')
 
         // Query //
         .query({ title: title })
-    
+
         // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(200)
@@ -106,7 +112,7 @@ describe('GET - Product', () => {
             // Body //
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(true)
-    
+
             // Data //
             expect(response.body.data).toBeInstanceOf(Array);
         })
@@ -114,13 +120,13 @@ describe('GET - Product', () => {
 
     test('Deve tentar obter o produto pela descrição', () => {
         return request(address)
-    
+
         // Método GET //
         .get('/product')
 
         // Query //
         .query({ description: description })
-    
+
         // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(200)
@@ -128,7 +134,7 @@ describe('GET - Product', () => {
             // Body //
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(true)
-    
+
             // Data //
             expect(response.body.data).toBeInstanceOf(Array);
         })
@@ -136,13 +142,13 @@ describe('GET - Product', () => {
 
     test('Deve tentar obter o produto pelo título e descrição', () => {
         return request(address)
-    
+
         // Método GET //
         .get('/product')
 
         // Query //
         .query({ title: title, description: description })
-    
+
         // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(200)
@@ -150,7 +156,7 @@ describe('GET - Product', () => {
             // Body //
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(true)
-    
+
             // Data //
             expect(response.body.data).toBeInstanceOf(Array);
         })
@@ -179,7 +185,7 @@ describe('PUT - Product', () => {
             // Body //
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(true)
-    
+
             // Data //
             expect(response.body.data.title).toBe(newTitle)
             expect(response.body.data.description).toBe(newDescription)
@@ -216,10 +222,10 @@ describe('DELETE - Product', () => {
 
     test('Deve tentar deletar um produto', () => {
         return request(address)
-    
+
         // Método DEL //
         .del(`/product/${productId}`)
-    
+
         // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(200)

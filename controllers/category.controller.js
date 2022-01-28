@@ -22,12 +22,9 @@ export default function CategoryController() {
                 })
             }
 
+            // Criando nova categoria //
             const _category = await Category.create({ name: name });
-            return routerCommon.sendResponse(res, {
-                success: true,
-                message: 'Categoria criada com sucesso',
-                data: _category
-            })
+            return routerCommon.sendResponse(res, { success: true, message: 'Categoria criada com sucesso', data: _category })
         } catch (e) {
             console.log(e)
             return routerCommon.sendResponse(res, {
@@ -41,6 +38,7 @@ export default function CategoryController() {
 
     async function get(req, res) {
         try {
+            // Obtendo todas as categorias //
             const categories = await Category.find();
             return routerCommon.sendResponse(res, { success: true, data: categories });
         } catch (e) {
@@ -100,9 +98,7 @@ export default function CategoryController() {
             }
 
             // Obtendo e removendo no Mongo //
-            await Category.findByIdAndRemove({
-                _id: id
-            });
+            await Category.findByIdAndRemove({ _id: id });
 
             // Removendo os produtos da categoria //
             await Product.deleteMany({ categoryId: id })
