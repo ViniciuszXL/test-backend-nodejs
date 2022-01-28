@@ -11,7 +11,7 @@ export default function createServer() {
         return new Promise(async (resolve, reject) => {
             console.log('> [server_service] Iniciando...');
             const { PORT } = environments.SERVER;
-            const { isTest } = options;
+            const { isTest, port } = options;
 
             try {
                 const app = express()
@@ -34,7 +34,7 @@ export default function createServer() {
 
                 // Listen //
                 console.log(`> [server_service] Iniciando a aplicação na porta ${PORT}`)
-                server.listen(PORT);
+                server.listen(port || PORT);
 
                 // Callbacks //
                 server.on('listening', () => {

@@ -33,20 +33,19 @@ export default function createRedisConnection() {
     }
 
     function stop(options = {}) {
-        return new Promise((resolve, reject) => {
-            const { redis } = options;
+        console.log('> [redis_service] Desligando...');
+        
+        const { redis } = options;
+        if (!redis) {
+            throw new Error('> [redis_service] Conexão com o Redis não informada! Cancelando desconexão...');
+        }
 
-            if (!redis) {
-                throw new Error('> [redis_service] Conexão com o Redis não informada! Cancelando desconexão...');
-            }
-
-            try {
-                redis.quit();
-                resolve(true);
-            } catch (err) {
-                reject(err);
-            }
-        });
+        try {
+            console.log('> [redis_service] Desligamento finalizado!');
+            redis.quit();
+        } catch (err) {
+            throw new Error(err);
+        }
     }
 
     return {

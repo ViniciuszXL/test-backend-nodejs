@@ -13,7 +13,7 @@ describe('START - Mongo', () => {
     test('Deve inicializar a conexão com o Mongo', async() => {
         const mongo = createMongoConnection();
 
-        const connection = await mongo.start({ isTest: true });
+        const connection = await mongo.start({ isTest: true, database: 'tests' });
         expect(connection).not.toThrow();
     });
 });
