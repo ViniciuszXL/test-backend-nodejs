@@ -22,14 +22,14 @@ export default function productRouter() {
         })
 
         // Rotas GET //
-        route.get('/product/search', async (req, res) => await common.list(req, res, options))
+        route.get('/product', async (req, res) => await common.list(req, res, options))
 
         // Rotas PUT //
         route.put('/product', common.update)
 
         // Rotas DEL //
         route.delete('/product/:id', async (req, res) => {
-            common.paramenters().del(req, res, async (err) => {
+            common.parameters().del(req, res, async (err) => {
                 if (!err) {
                     return await common.del(req, res);
                 }
