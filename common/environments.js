@@ -1,10 +1,9 @@
-import dotenv from 'dotenv'
+const dotenv = require('dotenv');
 
 // Inicializando  o dotenv //
 dotenv.config()
 
-export default {
-
+module.exports = {
     CODE: {
         SUCCESS: 200,
 
@@ -42,5 +41,4 @@ export default {
         DATABASE: process.env.MONGO_DATABASE || 'test',
         PORT: process.env.MONGO_PORT || 27017,
     }
-
 }

@@ -1,6 +1,15 @@
-export default function RouterCommon() {
+class RouterCommon {
 
-    function sendResponse(res, options = {}) {
+    /**
+     * @name sendResponse - Envia um response a solicitação de um request
+     *
+     * @param {Request} req
+     * @param {Object} options
+     *
+     * @returns Objeto
+     */
+
+    sendResponse(req, options = {}) {
         try {
             const { code, success } = options;
 
@@ -19,7 +28,6 @@ export default function RouterCommon() {
         }
     }
 
-    return {
-        sendResponse
-    }
 }
+
+module.exports = RouterCommon;
