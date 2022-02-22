@@ -1,5 +1,8 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
+/**
+ * @name schema - Schema da tabela Produtos
+ */
 const schema = new mongoose.Schema({
     title: {
         type: String,
