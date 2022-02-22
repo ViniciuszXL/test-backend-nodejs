@@ -1,9 +1,14 @@
-import jestCli from 'jest-cli';
-import createCore from './core-app.js';
+const jestCli = require('jest-cli');
+const createCore = require('./core-app.js');
 
 // Models //
-import { Category } from './models/category.model.js';
-import { Product } from './models/product.model.js';
+const {
+    Category
+} = require('./models/category.model.js');
+
+const {
+    Product
+} = require('./models/product.model.js');
 
 // Local variables //
 let core_app, services;
@@ -14,11 +19,26 @@ const beforeTests = () => {
     core_app = new createCore();
 
     // Iniciando os serviços //
-    return core_app.start(options).then(async (_services) => {
+    return core_app.start(options).then((_services) => {
         services = _services;
 
-        await Category.deleteMany({})
-        await Product.deleteMany({})
+        Category.deleteMany({})
+
+        .then(() => {
+            Product.deleteMany({})
+
+            .then(() => {
+                console.log('Categorias e produtos deletados com sucesso.')
+            })
+
+            .catch(err => {
+                console.log(err);
+            })
+        })
+
+        .catch(err => {
+            console.log(err);
+        })
     }).catch(console.log)
 }
 

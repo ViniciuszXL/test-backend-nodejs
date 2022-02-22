@@ -1,7 +1,4 @@
-import createCore from './core-app.js'
-
-// Criando a instância do Core //
-const server = createCore();
+const server = require('./core-app.js')
 
 // Iniciando o core //
 server.start()

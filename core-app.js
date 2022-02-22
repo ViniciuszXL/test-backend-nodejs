@@ -1,90 +1,108 @@
-import createMongoConnection from "./services/mongo/mongo.js";
-import createRedisConnection from './services/redis/redis.js';
-import createServer from './services/server/server.js';
-import routes from './routes/routes.js'
+const mongo = require("./services/mongo/mongo.js");
+const redis = require('./services/redis/redis.js');
+const _server = require('./services/server/server.js');
+const routes = require('./routes/routes.js');
 
-export default function createCore() {
+class Core {
 
-    const mongo = createMongoConnection();
-    const redis = createRedisConnection();
-    const _server = createServer();
-
-    function start(options = {}) {
+    /**
+     * @name start - Inicia o core
+     *
+     * @param {JSON} options
+     */
+    start = (options = {}) => {
         return new Promise((resolve, reject) => {
             console.log('> [core] Iniciando...');
 
             // Conexão com o MongoDB //
             mongo.start(options)
-    
+
             // Conexão feita com sucesso //
             .then(mongoCon => {
-    
+
                 // Conexão com o Redis //
-               redis.start()
-    
-               // Conexão feita com sucesso //
-               .then(redisCon => {
+            redis.start()
+
+            // Conexão feita com sucesso //
+            .then(redisCon => {
                     // Iniciando a aplicação //
                     _server.start(options)
-    
+
                     // Aplicação iniciada com sucesso //
                     .then(connection => {
-                        const { app, server } = connection; 
-                        const options = { 
-                            mongo: mongoCon, 
+                        const { app, server } = connection;
+                        const options = {
+                            mongo: mongoCon,
                             mongoClass: mongo,
-                            redis: redisCon, 
+                            redis: redisCon,
                             redisClass: redis,
-                            server: app, 
-                            webserver: _server, 
-                            httpServer: server 
+                            server: app,
+                            webserver: _server,
+                            httpServer: server
                         }
-    
+
                         // Iniciando as rotas //
-                        routes().start(options)
-    
+                        routes.start(options)
+
                         // Inicialização das rotas feita com sucesso !
                         .then(() => {
                             resolve(options);
                             console.log('> [core] Inicio do core finalizado! Sistema rodando.')
                         })
-    
+
                         // Ocorreu um erro ao inicializar as rotas //
                         .catch(reject)
                     })
-    
+
                     // Ocorreu um erro ao iniciar a aplicação //
                     .catch(reject)
-               })
-    
-               // Ocorreu um erro ao iniciar a conexão com o Redis //
-               .catch(reject)
             })
-    
+
+            // Ocorreu um erro ao iniciar a conexão com o Redis //
+            .catch(reject)
+            })
+
             // Ocorreu um erro ao iniciar a conexão com o Mongo //
             .catch(reject)
-        });  
+        });
     }
 
-    async function stop(options = {}) {
+    /**
+     * @name stop - Desliga o core
+     *
+     * @param {JSON} options
+     */
+    stop = (options = {}) => {
         console.log('> [core] Desligando...');
 
-        const { mongoClass, redisClass, webserver, httpServer } = options;
+        return new Promise((resolve, reject) => {
+            const { mongoClass, redisClass, webserver, httpServer } = options;
 
-        // Finalizand o servidor //
-        await webserver.stop(httpServer);
+            // Finalizand o servidor //
+            webserver.stop(httpServer)
 
-        // Finalizando o MongoDB //
-        await mongoClass.stop();
+            // Finalização ocoridda com sucesso //
+            .then(() => {
+                // Finalizando o MongoDB //
+                mongoClass.stop()
 
-        // Finalizando o Redis //
-        redisClass.stop(options);
+                // Finalização ocoridda com sucesso //
+                .then(() => {
+                    // Finalizando o Redis //
+                    redisClass.stop(options);
+                    console.log('> [core] Desligamento finalizado!');
+                    resolve(true);
+                })
 
-        console.log('> [core] Desligamento finalizado!');
+                // Ocorreu um erro //
+                .catch(reject)
+            })
+
+            // Ocorreu um erro //
+            .catch(reject)
+        });
     }
 
-    return {
-        start,
-        stop
-    }
 }
+
+module.exports = new Core();
