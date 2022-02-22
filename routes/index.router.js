@@ -1,15 +1,25 @@
-import indexRouterCommon from "./index.router.common.js";
-import express from 'express';
+const common = require("./index.router.common.js");
+const express = require('express');
 
-export default function indexRouter() {
+class IndexRouter {
 
-    const common = new indexRouterCommon();
-
-    function getName() {
+    /**
+     * @name getName - Obtém o nome da rota
+     *
+     * @returns String
+     */
+    getName() {
         return "Index"
     }
 
-    function getRoutes(options = {}) {
+    /**
+     * @name getRoutes - Obtem todas as rotas da classe
+     *
+     * @param {JSON} options
+     *
+     * @returns Routes
+     */
+    getRoutes(options = {}) {
         // Route //
         const route = express.Router();
 
@@ -19,8 +29,6 @@ export default function indexRouter() {
         return route;
     }
 
-    return {
-        getName,
-        getRoutes
-    }
 }
+
+module.exports = new IndexRouter();

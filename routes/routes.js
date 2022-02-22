@@ -1,16 +1,20 @@
-import indexRouter from './index.router.js';
-import categoryRouter from './category/category.router.js'
-import productRouter from './product/product.router.js';
+const indexRouter = require('./index.router.js');
 
-export default function routes() {
+class Routes {
 
-    function start(options = {}) {
+    /**
+     * @name start - Iniciando as rotas
+     *
+     * @param {JSON} options
+     *
+     */
+    start = (options = {}) => {
         return new Promise((resolve, reject) => {
             const { server } = options;
             console.log('> [routes] Iniciando as rotas...');
 
             try {
-                const routes = [ indexRouter(), categoryRouter(), productRouter() ]
+                const routes = [ indexRouter ]
                 for (var router of routes) {
                     server.use('/', router.getRoutes(options))
                     console.log(`> [routes] Rota '${router.getName()}' iniciada com sucesso!`)
@@ -24,7 +28,6 @@ export default function routes() {
         });
     }
 
-    return {
-        start
-    }
 }
+
+module.exports = new Routes();

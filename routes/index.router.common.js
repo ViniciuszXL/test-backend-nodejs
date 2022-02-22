@@ -1,6 +1,13 @@
-export default function indexRouterCommon() {
+class IndexRouterCommon {
 
-    function get(req, res, next) {
+    /**
+     * @name get - Obtem as informações da aplicação
+     *
+     * @param {Response} res
+     *
+     * @returns Response
+     */
+    get = (res) => {
         return res.json({
             "success": true,
             "version": "1.0.0",
@@ -12,7 +19,6 @@ export default function indexRouterCommon() {
         })
     }
 
-    return {
-        get
-    }
 }
+
+module.exports = new IndexRouterCommon();
