@@ -1,13 +1,35 @@
-import { Product } from '../models/product.model.js'
-import RouterCommon from '../common/router.common.js';
-import environments from '../common/environments.js';
-import RedisTools from '../services/redis/redis.tools.js'
+const { Product } = require('../models/product.model.js')
+const RouterCommon = require('../common/router.common.js');
+const environments = require('../common/environments.js');
+const RedisTools = require('../services/redis/redis.tools.js');
+
+const routerCommon = new RouterCommon();
+const redisTools = new RedisTools();
+const redisEnable = environments.REDIS.ENABLE != 1 ? false : true;
+
+const create = (req, res) => {
+    return new Promise((resolve, reject) => {
+        const { title, categoryId } = req.body;
+
+        // Verificando a existência do produto //
+        Product.find({ title: title, categoryId: categoryId })
+
+        .then(() => {
+            resolve({
+                code: environments.CODE.REQUEST,
+                success: false,
+                message: 'Produto já cadastrado nessa categoria!'
+            })
+        })
+
+        .catch(err => {
+            console.log(err);
+            reject(err);
+        });
+    });
+}
 
 export default function ProductController() {
-
-    const routerCommon = new RouterCommon();
-    const redisTools = new RedisTools();
-    const redisEnable = environments.REDIS.ENABLE != 1 ? false : true;
 
     async function create(req, res) {
         try {
