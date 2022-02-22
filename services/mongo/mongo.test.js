@@ -1,4 +1,4 @@
-import createMongoConnection from './mongo.js';
+const createMongoConnection = require('./mongo.js');
 
 describe('CHECK - Mongo', () => {
     test('Deve ter os métodos #start e #stop', () => {

@@ -1,4 +1,4 @@
-import createServer from "./server.js";
+const createServer = require("./server.js");
 
 describe('CHECK - Server', () => {
     test('Deve ter os métodos #start e #stop', () => {

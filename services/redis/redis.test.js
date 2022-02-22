@@ -1,4 +1,4 @@
-import createRedisConnection from "./redis.js";
+const createRedisConnection = require("./redis.js");
 
 describe('CHECK - Redis', () => {
     test('Deve ter os métodos #start e #stop', async () => {

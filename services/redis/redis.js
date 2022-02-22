@@ -1,9 +1,12 @@
-import redis from 'redis';
-import environments from '../../common/environments.js';
+const redis = require('redis');
+const environments = require('../../common/environments.js')
 
-export default function createRedisConnection() {
+class Redis {
 
-    function start() {
+    /**
+     * @name start - Inicia o serviço do Redis
+     */
+    start = () => {
         return new Promise(async(resolve, reject) => {
             console.log('> [redis_service] Iniciando...');
 
@@ -37,7 +40,13 @@ export default function createRedisConnection() {
         });
     }
 
-    function stop(options = {}) {
+    /**
+     * @name stop - Desligando o serviço do Redis
+     *
+     * @param {JSON} options
+     *
+     */
+    stop = (options = {}) => {
         console.log('> [redis_service] Desligando...');
 
         const { redis } = options;
@@ -53,8 +62,6 @@ export default function createRedisConnection() {
         }
     }
 
-    return {
-        start,
-        stop
-    }
 }
+
+module.exports = new Redis();

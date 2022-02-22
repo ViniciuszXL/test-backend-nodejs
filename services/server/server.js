@@ -1,13 +1,20 @@
-import http from 'http'
-import express from 'express'
-import cors from 'cors'
-import bodyParser from 'body-parser';
+const http = require('http')
+const express = require('express')
+const cors = require('cors')
+const bodyParser = require('body-parser');
 
-import environments from "../../common/environments.js";
+const environments = require("../../common/environments.js");
 
-export default function createServer() {
+class Server {
 
-    function start(options = {}) {
+    /**
+     * @name start - Iniciando o servidor
+     *
+     * @param {JSON} options
+     *
+     * @returns Inicialização foi feita com sucesso ou deu erro
+     */
+    start = (options = {}) => {
         return new Promise(async (resolve, reject) => {
             console.log('> [server_service] Iniciando...');
             const { PORT } = environments.SERVER;
@@ -56,7 +63,14 @@ export default function createServer() {
         });
     }
 
-    function stop(server) {
+    /**
+     * @name stop - Desliga o servidor
+     *
+     * @param {Object} server
+     *
+     * @returns Desligamento finalizado ou deu erro
+     */
+    stop = (server) => {
         return new Promise((resolve, reject) => {
             console.log('> [server_service] Desligando...');
 
@@ -72,8 +86,6 @@ export default function createServer() {
         })
     }
 
-    return {
-        start,
-        stop
-    }
 }
+
+module.exports = new Server();

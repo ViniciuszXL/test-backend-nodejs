@@ -1,9 +1,15 @@
-import mongoose from 'mongoose';
-import environment from '../../common/environments.js';
+const mongoose = require('mongoose')
+const environment = require('../../common/environments.js')
 
-export default function createMongoConnection() {
+class Mongo {
 
-    function start(options = {}) {
+    /**
+     * @name start - Iniciando o Mongo
+     *
+     * @param {JSON} options
+     *
+     */
+    start = (options = {}) => {
         return new Promise(async (resolve, reject) => {
             console.log('> [mongo_service] Iniciando...');
 
@@ -24,7 +30,10 @@ export default function createMongoConnection() {
         });
     }
 
-    function stop() {
+    /**
+     * @name stop - Desligando o serviço do Mongo
+     */
+    stop = () => {
         console.log('> [mongo_service] Desligando...');
 
         try {
@@ -35,8 +44,6 @@ export default function createMongoConnection() {
         }
     }
 
-    return {
-        start,
-        stop
-    }
 }
+
+module.exports = new Mongo();
