@@ -1,4 +1,4 @@
-import request from 'supertest';
+const request = require('supertest');
 
 // Local variables //
 let address = global.address;
@@ -9,19 +9,19 @@ describe('POST - Category', () => {
 
     test('Deve criar uma categoria', () => {
         return request(address)
-    
+
         // Método POST //
         .post('/category')
-    
+
         // Enviando o body //
         .send({ name: categoryName })
-    
+
         // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(200)
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(true)
-    
+
             // Data //
             expect(response.body.data.name).toBe(categoryName)
             expect(response.body.data._id).toBeDefined()
@@ -32,13 +32,13 @@ describe('POST - Category', () => {
 
     test('Deve dar erro ao criar uma categoria duplicada', () => {
         return request(address)
-    
+
         // Método POST //
         .post('/category')
-    
+
         // Enviando o body //
         .send({ name: categoryName })
-    
+
         // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(400)
@@ -54,16 +54,16 @@ describe('GET - Category', () => {
 
     test('Deve obter todas as categorias', () => {
         return request(address)
-    
+
         // Método GET //
         .get('/category')
-    
+
         // Retornou com sucesso //
         .then(response => {
             expect(response.statusCode).toBe(200)
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(true)
-    
+
             // Data //
             expect(response.body.data).toBeInstanceOf(Array);
         })
@@ -78,15 +78,15 @@ describe('PUT - Category', () => {
 
     test('Deve criar e atualizar uma categoria existente', () => {
         return request(address)
-    
+
         // Método POST //
         .post('/category')
-    
+
         // Enviando o body //
         .send({ name: categoryName })
-    
+
         // Retornou com sucesso //
-        .then(response => 
+        .then(response =>
             request(address)
 
             // Método PUT //
@@ -100,7 +100,7 @@ describe('PUT - Category', () => {
                 expect(response.statusCode).toBe(200)
                 expect(response.body.success).toBeDefined()
                 expect(response.body.success).toBe(true)
-        
+
                 // Data //
                 expect(response.body.data.name).toBe(newCategoryName)
                 expect(response.body.data._id).toBeDefined()
@@ -124,7 +124,7 @@ describe('PUT - Category', () => {
             expect(response.statusCode).toBe(400)
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(false)
-            expect(response.body.message).toBe('Essa categoria não existe!')
+            expect(response.body.message).toBe('Categoria não foi encontrada na base de dados!')
         })
     });
 
@@ -136,15 +136,15 @@ describe('DELETE - Category', () => {
 
     test('Deve deletar uma categoria', () => {
         return request(address)
-    
+
         // Método POST //
         .post('/category')
-    
+
         // Enviando o body //
         .send({ name: categoryName })
-    
+
         // Retornou com sucesso //
-        .then(response => 
+        .then(response =>
             request(address)
 
             // Método PUT //
@@ -171,7 +171,7 @@ describe('DELETE - Category', () => {
             expect(response.statusCode).toBe(400)
             expect(response.body.success).toBeDefined()
             expect(response.body.success).toBe(false)
-            expect(response.body.message).toBe('Categoria não encontrada no banco de dados.')
+            expect(response.body.message).toBe('Categoria não foi encontrada na base de dados!')
         })
     })
 

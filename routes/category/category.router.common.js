@@ -1,61 +1,131 @@
-import RouterCommon from "../../common/router.common.js";
-import CategoryController from "../../controllers/category.controller.js"
-import environments from "../../common/environments.js";
+const common = require('../../common/router.common.js')
+const controller = require('../../controllers/category.controller.js')
+const environments = require('../../common/environments.js')
 
-export default function categoryRouterCommon() {
+/**
+ * @name CategoryRouterCommon - Common da rota da categoria
+ */
+class CategoryRouterCommon {
 
-    const controller = new CategoryController();
-    const routerCommon = new RouterCommon();
+    /**
+     * @name list - Obtém todas as categorias cadastradas
+     *
+     * @param {Request} req
+     * @param {Response} res
+     *
+     * @returns Objeto
+     */
+    list = (req, res) => {
+        return controller.get()
 
-    async function list(req, res) {
-        return await controller.get(req, res);
+        // Sucesso //
+        .then(data => common.sendResponse(res, data))
+
+        // Error
+        .catch(data => common.sendResponse(res, data))
     }
 
-    async function create(req, res, next) {
-        return await controller.create(req, res, next);
+    /**
+     * @name create - Criar uma nova categoria
+     *
+     * @param {Request} req
+     * @param {Response} res
+     *
+     * @returns Objeto
+     */
+    create = (req, res) => {
+        return controller.create(req)
+
+        // Sucesso //
+        .then(data => common.sendResponse(res, data))
+
+        // Error
+        .catch(data => common.sendResponse(res, data))
     }
 
-    async function update(req, res, next) {
-        return await controller.update(req, res, next);
+    /**
+     * @name update - Atualiza uma categoria
+     *
+     * @param {Request} req
+     * @param {Response} res
+     *
+     * @returns Objeto
+     */
+    update = (req, res) => {
+        return controller.update(req)
+
+        // Sucesso //
+        .then(data => common.sendResponse(res, data))
+
+        // Error //
+        .catch(data => common.sendResponse(res, data))
     }
 
-    async function del(req, res, next) {
-        return await controller.del(req, res, next);
+    /**
+     * @name del - Deleta uma categoria
+     *
+     * @param {Request} req
+     * @param {Response} res
+     *
+     * @returns Objeto
+     */
+    del = (req, res) => {
+        return controller.del(req)
+
+        // Sucesso //
+        .then(data => common.sendResponse(res, data))
+
+        // Error //
+        .catch(data => common.sendResponse(res, data))
     }
 
-    function parameters() {
-
-        function sendError(res, message) {
-            return routerCommon.sendResponse(res, {
-                code: environments.CODE.REQUEST,
-                success: false,
-                message: message
-            })
-        }
-
-        function create(req, res, callback) {
-            const { name } = req.body;
-
-            // Verificando se o nome da categoria está informada //
-            if (!name){
-                sendError(res, "O nome da categoria não está informado! Campo 'name' faltando")
-                return callback(true);
-            }
-
-            return callback(undefined, true);
-        }
+    /**
+     * @name parameters - Parâmetros adicionais
+     *
+     * @returns Função
+     */
+    parameters = () => {
 
         return {
-            create
+            /**
+             * @name sendError - Envia um response de erro
+             *
+             * @param {Response} res
+             * @param {String} message
+             *
+             * @returns Response
+             */
+            sendError(res, message) {
+                return common.sendResponse(res, {
+                    code: environments.code.REQUEST,
+                    success: false,
+                    message: message
+                })
+            },
+
+            /**
+             * @name create - Verifica se o nome da categoria está sendo informada na requisição
+             *
+             * @param {Request} req
+             * @param {Response} res
+             * @param {Object} callback
+             *
+             * @returns Object
+             *
+             */
+            create(req, res, callback) {
+                const { name } = req.body;
+
+                // Verificando se o nome da categoria está informada //
+                if (!name) {
+                    sendError(res, "O nome da categoria não está informado! Campo 'name' faltando")
+                    return callback(true)
+                }
+
+                return callback(undefined, true);
+            }
         }
     }
-
-    return {
-        list,
-        create,
-        update,
-        del,
-
-        parameters
-    }
 }
+
+module.exports = new CategoryRouterCommon()

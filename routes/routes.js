@@ -1,4 +1,6 @@
 const indexRouter = require('./index.router.js');
+const categoryRouter = require('./category/category.router.js')
+const productRouter = require('./product/product.router.js')
 
 class Routes {
 
@@ -14,7 +16,7 @@ class Routes {
             console.log('> [routes] Iniciando as rotas...');
 
             try {
-                const routes = [ indexRouter ]
+                const routes = [ indexRouter, categoryRouter, productRouter ]
                 for (var router of routes) {
                     server.use('/', router.getRoutes(options))
                     console.log(`> [routes] Rota '${router.getName()}' iniciada com sucesso!`)

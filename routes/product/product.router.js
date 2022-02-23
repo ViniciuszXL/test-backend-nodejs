@@ -1,37 +1,49 @@
-import productRouterCommon from "./product.router.common.js";
-import express from 'express'
+const common = require('./product.router.common.js')
+const express = require('express')
 
-export default function productRouter() {
+class ProductRouter {
 
-    const common = new productRouterCommon();
-
-    function getName() {
+    /**
+     * @name getName - Obtém o nome da rota
+     *
+     * @returns String
+     */
+    getName = () => {
         return "Product"
     }
 
-    function getRoutes(options = {}) {
+    /**
+     * @name getRoutes - Obtem todas as rotas da classe
+     *
+     * @param {JSON} options
+     *
+     * @returns Routes
+     */
+    getRoutes = (options = {}) => {
         const route = express.Router();
 
         // Rotas POST //
-        route.post('/product', async (req, res) => {
-            common.parameters().create(req, res, async (err) => {
+        route.post('/product', (req, res) => {
+            common.parameters().create(req, res, (err) => {
                 if (!err) {
-                    return await common.create(req, res);
+                    return common.create(req, res);
                 }
             })
         })
 
         // Rotas GET //
-        route.get('/product', async (req, res) => await common.list(req, res, options))
+        route.get('/product', (req, res) => {
+            return common.list(req, res, options);
+        })
 
         // Rotas PUT //
-        route.put('/product', common.update)
+        route.put('/product', [ common.update ])
 
         // Rotas DEL //
-        route.delete('/product/:id', async (req, res) => {
-            common.parameters().del(req, res, async (err) => {
+        route.delete('/product/:id', (req, res) => {
+            common.parameters().del(req, res, (err) => {
                 if (!err) {
-                    return await common.del(req, res);
+                    return common.del(req, res);
                 }
             })
         })
@@ -39,8 +51,6 @@ export default function productRouter() {
         return route
     }
 
-    return {
-        getName,
-        getRoutes
-    }
 }
+
+module.exports = new ProductRouter()

@@ -1,19 +1,29 @@
-import categoryRouterCommon from "./category.router.common.js";
-import express from 'express'
+const common = require('./category.router.common.js')
+const express = require('express')
 
-export default function categoryRouter() {
+class CategoryRouter {
 
-    const common = new categoryRouterCommon();
-
-    function getName() {
+    /**
+     * @name getName - Obtém o nome da rota
+     *
+     * @returns String
+     */
+    getName = () => {
         return "Category"
     }
 
-    function getRoutes(options = {}) {
+    /**
+     * @name getRoutes - Obtem todas as rotas da classe
+     *
+     * @param {JSON} options
+     *
+     * @returns Routes
+     */
+    getRoutes(options = {}) {
         const route = express.Router();
 
         // Rotas POST //
-        route.post('/category', async (req, res) => {
+        route.post('/category', (req, res) => {
             common.parameters().create(req, res, err => {
                 if (!err) {
                     return common.create(req, res);
@@ -33,8 +43,6 @@ export default function categoryRouter() {
         return route
     }
 
-    return {
-        getName,
-        getRoutes
-    }
 }
+
+module.exports = new CategoryRouter()
