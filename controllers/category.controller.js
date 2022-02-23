@@ -1,6 +1,10 @@
 const Category = require('../models/category.model.js');
 const Product = require('../models/product.model.js');
-const environments = require('../common/environments.js');
+
+const {
+    sendErrorIntern,
+    sendErrorRequest
+} = require('../common/utilitaries.js')
 
 /**
 * @name create - Cria uma nova categoria
@@ -15,22 +19,14 @@ const create = (req) => {
 
         // Verificando se existe um categoria //
         Category.findOne({ name })
-
         // Categoria existente //
         .then((data) => {
             if (data != null) {
-                reject({
-                    code: environments.CODE.REQUEST,
-                    success: false,
-                    message: 'Categoria já existente'
-                })
-
-                return;
+                return reject(sendErrorRequest('Categoria já existente'))
             }
 
             // Criando uma nova categoria //
             Category.create({ name: name })
-
             // Categoria criada com sucesso /
             .then((data) => {
                 resolve({
@@ -39,16 +35,14 @@ const create = (req) => {
                     data: data
                 })
             })
-
             // Ocorreu um erro ao criar a categoria //
             .catch(err => {
-                reject(err);
+                reject(sendErrorIntern('Ocorreu um erro ao criar uma nova categoria', err));
             })
         })
-
         // Categoria inexistente //
         .catch(err => {
-            reject(err);
+            reject(sendErrorIntern('Ocorreu um erro ao buscar uma categoria', err));
         });
     });
 }
@@ -73,12 +67,7 @@ const get = () => {
 
         // Ocorreu um erro //
         .catch(err => {
-            reject({
-                code: environments.CODE.INTERN,
-                success: false,
-                message: 'Ocorreu um erro ao buscar as categorias no servidor.',
-                data: err
-            });
+            reject(sendErrorIntern('Ocorreu um erro ao buscar as categorias no servidor.', err));
         });
     });
 };
@@ -100,13 +89,7 @@ const update = (req) => {
         // Atualização feita com sucesso //
         .then((data) => {
             if (data == null) {
-                reject({
-                    code: environments.CODE.REQUEST,
-                    success: false,
-                    message: 'Categoria não foi encontrada na base de dados!'
-                })
-
-                return;
+                return reject(sendErrorRequest('Categoria não foi encontrada na base de dados!'))
             }
 
             // Obtendo a categoria //
@@ -122,13 +105,13 @@ const update = (req) => {
 
             // Ocorreu um erro ao encontrar a categoria //
             .catch(err => {
-                reject(err)
+                reject(sendErrorIntern('Ocorreu um erro ao buscar a categoria na base de dados.', err))
             })
         })
 
         // Categoria não encontrada //
         .catch(err => {
-            reject(err)
+            reject(sendErrorIntern('Ocorreu um erro ao buscar e atualizar uma categoria na base de dados.', err))
         })
     });
 }
@@ -149,11 +132,7 @@ const del = (req) => {
         // Sucesso //
         .then(data => {
             if (data == null) {
-                return reject({
-                    code: environments.CODE.REQUEST,
-                    success: false,
-                    message: 'Categoria não foi encontrada na base de dados!'
-                })
+                return reject(sendErrorRequest('Categoria não foi encontrada na base de dados!'))
             }
 
             // Verificando se existe e removendo a categoria //
@@ -171,32 +150,17 @@ const del = (req) => {
                 })
                 // Ocorreu um erro na criação do produto //
                 .catch(err => {
-                    reject({
-                        code: environments.CODE.INTERN,
-                        success: false,
-                        message: 'Ocorreu um erro ao deletar todos os produtos referentes à categoria.',
-                        data: err
-                    })
+                    reject(sendErrorIntern('Ocorreu um erro ao deletar todos os produtos referentes à categoria.', err))
                 })
             })
             // Categoria não encontrada //
             .catch(err => {
-                reject({
-                    code: environments.CODE.INTERN,
-                    success: false,
-                    message: 'Ocorreu um erro ao buscar e remover a categoria no servidor.',
-                    data: err
-                })
+                reject(sendErrorIntern('Ocorreu um erro ao buscar e remover a categoria no servidor.', err))
             })
         })
         // Categoria não encontrada //
         .catch(err => {
-            reject({
-                code: environments.CODE.INTERN,
-                success: false,
-                message: 'Ocorreu um erro ao buscar e remover a categoria no servidor.',
-                data: err
-            })
+            reject(sendErrorIntern('Ocorreu um erro ao buscar e remover a categoria no servidor.', err))
         })
     });
 }
