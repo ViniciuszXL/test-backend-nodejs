@@ -1,3 +1,6 @@
+/**
+ * @name RouterCommon - Classe common de Route
+ */
 class RouterCommon {
 
     /**
@@ -8,8 +11,7 @@ class RouterCommon {
      *
      * @returns Objeto
      */
-
-    sendResponse(req, options = {}) {
+    sendResponse(res, options = {}) {
         try {
             const { code, success } = options;
 
@@ -30,4 +32,4 @@ class RouterCommon {
 
 }
 
-module.exports = RouterCommon;
+module.exports = new RouterCommon();

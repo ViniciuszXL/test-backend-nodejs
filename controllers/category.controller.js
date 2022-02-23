@@ -1,9 +1,9 @@
-const { Category } = require('../models/category.model.js');
-const { Product } = require('../models/product.model.js');
+const Category = require('../models/category.model.js');
+const Product = require('../models/product.model.js');
 const environments = require('../common/environments.js');
 
 /**
-* @name create
+* @name create - Cria uma nova categoria
 *
 * @param { Request } req
 *
@@ -18,7 +18,7 @@ const create = (req) => {
 
         // Categoria existente //
         .then((data) => {
-            if (!data) {
+            if (data != null) {
                 reject({
                     code: environments.CODE.REQUEST,
                     success: false,
@@ -33,7 +33,6 @@ const create = (req) => {
 
             // Categoria criada com sucesso /
             .then((data) => {
-                console.log(data);
                 resolve({
                     success: true,
                     message: 'Categoria criada com sucesso',
@@ -43,21 +42,19 @@ const create = (req) => {
 
             // Ocorreu um erro ao criar a categoria //
             .catch(err => {
-                console.log(err);
                 reject(err);
             })
         })
 
         // Categoria inexistente //
         .catch(err => {
-            console.log(err);
             reject(err);
         });
     });
 }
 
 /**
- * @name get - Obter todas as categorias
+ * @name get - Obtém todas as categorias
  *
  * @returns JSON
  */
@@ -68,7 +65,6 @@ const get = () => {
 
         // Categorias obtidas com sucesso /
         .then(categories => {
-            console.log(categories);
             resolve({
                 success: true,
                 data: categories
@@ -77,8 +73,12 @@ const get = () => {
 
         // Ocorreu um erro //
         .catch(err => {
-            console.log(err);
-            reject(err);
+            reject({
+                code: environments.CODE.INTERN,
+                success: false,
+                message: 'Ocorreu um erro ao buscar as categorias no servidor.',
+                data: err
+            });
         });
     });
 };
@@ -98,13 +98,22 @@ const update = (req) => {
         Category.findByIdAndUpdate(id, req.body)
 
         // Atualização feita com sucesso //
-        .then(() => {
+        .then((data) => {
+            if (data == null) {
+                reject({
+                    code: environments.CODE.REQUEST,
+                    success: false,
+                    message: 'Categoria não foi encontrada na base de dados!'
+                })
+
+                return;
+            }
+
             // Obtendo a categoria //
             Category.findOne({ _id: id })
 
             // Categoria encontrada com sucesso //
             .then((data) => {
-                console.log(data)
                 resolve({
                     success: true,
                     data: data
@@ -113,14 +122,12 @@ const update = (req) => {
 
             // Ocorreu um erro ao encontrar a categoria //
             .catch(err => {
-                console.log(err)
                 reject(err)
             })
         })
 
         // Categoria não encontrada //
         .catch(err => {
-            console.log(err);
             reject(err)
         })
     });
@@ -137,33 +144,59 @@ const del = (req) => {
     return new Promise((resolve, reject) => {
         const { id } = req.params;
 
-        // Verificando se existe e removendo a categoria //
-        Category.findByIdAndRemove({ _id: id })
+        // Verificando se existe a categoria //
+        Category.findOne({ _id: id })
+        // Sucesso //
+        .then(data => {
+            if (data == null) {
+                return reject({
+                    code: environments.CODE.REQUEST,
+                    success: false,
+                    message: 'Categoria não foi encontrada na base de dados!'
+                })
+            }
 
-        // Verificado e removido com sucesso //
-        .then(() => {
-            // Deletando todos os produtos da categoria //
-            Product.deleteMany({ categoryId: id })
-
-            // Produtos deletados com sucesso //
+            // Verificando se existe e removendo a categoria //
+            Category.findByIdAndRemove({ _id: id })
+            // Verificado e removido com sucesso //
             .then(() => {
-                resolve({
-                    success: true,
-                    message: 'Categoria e seus produtos deletados com sucesso.'
+                // Deletando todos os produtos da categoria //
+                Product.deleteMany({ categoryId: id })
+                // Produtos deletados com sucesso //
+                .then(() => {
+                    resolve({
+                        success: true,
+                        message: 'Categoria e seus produtos deletados com sucesso.'
+                    })
+                })
+                // Ocorreu um erro na criação do produto //
+                .catch(err => {
+                    reject({
+                        code: environments.CODE.INTERN,
+                        success: false,
+                        message: 'Ocorreu um erro ao deletar todos os produtos referentes à categoria.',
+                        data: err
+                    })
                 })
             })
-
-            // Ocorreu um erro na criação do produto //
+            // Categoria não encontrada //
             .catch(err => {
-                console.log(err);
-                reject(err)
+                reject({
+                    code: environments.CODE.INTERN,
+                    success: false,
+                    message: 'Ocorreu um erro ao buscar e remover a categoria no servidor.',
+                    data: err
+                })
             })
         })
-
         // Categoria não encontrada //
         .catch(err => {
-            console.log(err);
-            reject(err)
+            reject({
+                code: environments.CODE.INTERN,
+                success: false,
+                message: 'Ocorreu um erro ao buscar e remover a categoria no servidor.',
+                data: err
+            })
         })
     });
 }

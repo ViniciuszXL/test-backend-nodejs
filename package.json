@@ -13,7 +13,7 @@
     "jest": {
         "verbose": true,
         "globals": {
-            "address": "http://127.0.0.1:3333"
+            "address": "http://127.0.0.1:4444"
         },
         "testEnvironment": "node",
         "transform": {
