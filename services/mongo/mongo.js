@@ -10,18 +10,27 @@ class Mongo {
      *
      */
     start = (options = {}) => {
-        return new Promise(async (resolve, reject) => {
-            console.log('> [mongo_service] Iniciando...');
-
+        return new Promise((resolve, reject) => {
             const { database, isTest } = options;
+            if (!isTest)
+                console.log('> [mongo_service] Iniciando...');
+
             const { HOST, PORT, DATABASE } = environment.MONGO;
             const URI = `mongodb://${HOST}:${PORT}/${ database || DATABASE }`;
-            console.log(`> [mongo_service] Conectando a ${URI}`)
+            if (!isTest)
+                console.log(`> [mongo_service] Conectando a ${URI}`)
 
             try {
-                const connection = await mongoose.connect(URI);
-                console.log('> [mongo_service] Conexão feita com sucesso!');
-                resolve(isTest ? () => {} : connection);
+                mongoose.connect(URI)
+                // Conexão //
+                .then(connection => {
+                    if (!isTest)
+                        console.log('> [mongo_service] Conexão feita com sucesso!');
+
+                    resolve(isTest ? () => {} : connection)
+                })
+                // Error //
+                .catch(reject)
             } catch (e) {
                 console.log('> [mongo_service] Ocorreu um erro ao conectar ao Mongo'),
                 reject(false)
@@ -34,14 +43,18 @@ class Mongo {
      * @name stop - Desligando o serviço do Mongo
      */
     stop = () => {
-        console.log('> [mongo_service] Desligando...');
+        return new Promise((resolve, reject) => {
+            console.log('> [mongo_service] Desligando...');
 
-        try {
-            mongoose.connection.close();
-            console.log('> [mongo_service] Desligamento finalizado!');
-        } catch (e) {
-            throw new Error(e), resolve(false)
-        }
+            try {
+                mongoose.connection.close();
+                console.log('> [mongo_service] Desligamento finalizado!');
+                resolve(true)
+            } catch (e) {
+                reject(false)
+                throw new Error(e)
+            }
+        })
     }
 
 }

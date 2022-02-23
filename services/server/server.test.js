@@ -1,9 +1,7 @@
-const createServer = require("./server.js");
+const server = require("./server.js");
 
 describe('CHECK - Server', () => {
     test('Deve ter os métodos #start e #stop', () => {
-        const server = createServer();
-
         expect(server).toHaveProperty('start');
         expect(server).toHaveProperty('stop');
     });

@@ -7,7 +7,7 @@ class Redis {
      * @name start - Inicia o serviço do Redis
      */
     start = () => {
-        return new Promise(async(resolve, reject) => {
+        return new Promise((resolve, reject) => {
             console.log('> [redis_service] Iniciando...');
 
             const { HOST, PORT, ENABLE } = environments.REDIS;

@@ -15,7 +15,7 @@ class Server {
      * @returns Inicialização foi feita com sucesso ou deu erro
      */
     start = (options = {}) => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             console.log('> [server_service] Iniciando...');
             const { PORT } = environments.SERVER;
             const { isTest, port } = options;
