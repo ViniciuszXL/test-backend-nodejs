@@ -1,7 +1,11 @@
 const Product = require('../models/product.model.js')
-const common = require('../common/router.common.js');
 const environments = require('../common/environments.js');
 const tools = require('../services/redis/redis.tools.js');
+
+const {
+    sendErrorIntern,
+    sendErrorRequest
+} = require('../common/utilitaries.js')
 
 const redisEnable = environments.REDIS.ENABLE != 1 ? false : true;
 
@@ -19,22 +23,14 @@ const create = (req, res) => {
 
         // Verificando a existência do produto //
         Product.findOne({ title: title, categoryId: categoryId })
-
         // Sucesso //
         .then((data) => {
             if (data != null) {
-                resolve({
-                    code: environments.CODE.REQUEST,
-                    success: false,
-                    message: 'Produto já cadastrado nessa categoria!'
-                })
-
-                return;
+                return resolve(sendErrorRequest('Produto já cadastrado nessa categoria!'))
             }
 
             // Criando o produto //
             Product.create(req.body)
-
             // Criado com sucesso //
             .then(data => {
                 resolve({
@@ -43,20 +39,15 @@ const create = (req, res) => {
                     data: data
                 })
             })
-
             // Error //
             .catch(err => {
-                reject({
-                    code: environments.CODE.INTERN,
-                    success: false,
-                    message: 'Ocorreu um erro no registro do produto.',
-                    data: err
-                })
+                reject(sendErrorIntern('Ocorreu um erro no registro do produto.', err))
             })
         })
-
         // Error //
-        .catch(reject);
+        .catch(err => {
+            reject(sendErrorIntern('Ocorreu um erro ao verificar se o produto já existe.', err))
+        });
     });
 }
 
@@ -85,22 +76,20 @@ const get = (req, res, options = {}) => {
                     // Sucesso //
                     .then(data => {
                         if (data == null) {
-                            reject({
-                                code: environments.CODE.REQUEST,
-                                success: false,
-                                message: 'Produto informado não foi encontrado na base de dados.'
-                            })
-                        } else {
-                            tools.cache(options, key, data, 30)
-                            .then(() => {
-                                resolve({
-                                    success: true,
-                                    data: data
-                                })
-                            }).catch(reject)
+                            return reject(sendErrorRequest('Produto informado não foi encontrado na base de dados.'))
                         }
+
+                        // Inserindo no cache do Redis //
+                        tools.cache(options, key, data, 30)
+                        // Sucesso //
+                        .then(() => {
+                            resolve({ success: true, data: data })
+                        })
+                        // Error
+                        .catch(err => reject(sendErrorIntern('Ocorreu um erro ao inserir um dado no Redis', err)))
                     })
-                    .catch(reject)
+                    // Error
+                    .catch(err => reject(sendErrorIntern('Ocorreu um erro ao buscar o produto na base de dados', err)))
                 })
             };
 
@@ -111,17 +100,13 @@ const get = (req, res, options = {}) => {
                 // Sucesso //
                 .then(data => {
                     if (data != null) {
-                        resolve({
-                            success: true,
-                            data: JSON.parse(cache)
-                        })
-                    } else {
-                        find().then(resolve).catch(reject);
+                        return resolve({ success: true, data: JSON.parse(cache) })
                     }
-                })
 
+                    find().then(resolve).catch(reject);
+                })
                 // Error //
-                .catch(reject)
+                .catch(err => reject(sendErrorIntern('Ocorreu um erro ao buscar dados no Redis', err)))
             } else {
                 find().then(resolve).catch(reject);
             }
@@ -137,26 +122,23 @@ const get = (req, res, options = {}) => {
                 return new Promise((resolve, reject) => {
                     // Product //
                     Product.find({ title: title })
-
                     // Sucesso //
                     .then(data => {
                         if (data == null) {
-                            reject({
-                                code: environments.CODE.REQUEST,
-                                success: false,
-                                message: 'Produto informado não foi encontrado na base de dados.'
-                            })
-                        } else {
-                            tools.cache(options, key, data, 30)
-                            .then(() => {
-                                resolve({
-                                    success: true,
-                                    data: data
-                                })
-                            }).catch(reject)
+                            return reject(sendErrorRequest('Produto informado não foi encontrado na base de dados.'))
                         }
+
+                        // Inserindo no cache do Redis //
+                        tools.cache(options, key, data, 30)
+                        // Sucesso //
+                        .then(() => {
+                            resolve({ success: true, data: data })
+                        })
+                        // Error
+                        .catch(err => reject(sendErrorIntern('Ocorreu um erro ao inserir um dado no Redis', err)))
                     })
-                    .catch(reject)
+                    // Error
+                    .catch(err => reject(sendErrorIntern('Ocorreu um erro ao buscar o produto na base de dados', err)))
                 })
             };
 
@@ -166,14 +148,13 @@ const get = (req, res, options = {}) => {
                 // Sucesso //
                 .then(data => {
                     if (data != null) {
-                        resolve({
-                            success: true,
-                            data: JSON.parse(cache)
-                        })
-                    } else {
-                        find().then(resolve).catch(reject);
+                        return resolve({ success: true, data: JSON.parse(cache) })
                     }
+
+                    find().then(resolve).catch(reject);
                 })
+                // Error //
+                .catch(err => reject(sendErrorIntern('Ocorreu um erro ao buscar dados no Redis', err)))
             } else {
                 find().then(resolve).catch(reject)
             }
@@ -245,12 +226,7 @@ const get = (req, res, options = {}) => {
         })
 
         .catch(err => {
-            reject({
-                code: environments.CODE.INTERN,
-                success: false,
-                message: 'Ocorreu um erro ao buscar todos os produtos',
-                data: e
-            })
+            reject(sendErrorIntern('Ocorreu um erro ao buscar todos os produtos', err))
         })
     });
 }
@@ -267,25 +243,12 @@ const update = (req, res) => {
     return new Promise((resolve, reject) => {
         const { id } = req.query;
 
-        const sendError = (message, data) => {
-            return {
-                code: environments.CODE.INTERN,
-                success: false,
-                message: message,
-                data: data
-            }
-        }
-
         // Buscando um produto //
         Product.findOne({ _id: id })
         // Sucesso //
         .then(data => {
             if (data == null) {
-                return reject({
-                    code: environments.CODE.REQUEST,
-                    success: false,
-                    message: 'Esse produto não existe!'
-                })
+                return reject(sendErrorRequest('Esse produto não existe!'))
             }
 
             // Buscando o produto por ID e atualizando os valores //
@@ -303,17 +266,17 @@ const update = (req, res) => {
                 })
                 // Error //
                 .catch((err) => {
-                    reject(sendError('Ocorreu um erro ao buscar o produto atualizado', err))
+                    reject(sendErrorIntern('Ocorreu um erro ao buscar o produto atualizado', err))
                 })
             })
             // Error
             .catch((err) => {
-                reject(sendError('Ocorreu um erro ao atualizar um produto', err))
+                reject(sendErrorIntern('Ocorreu um erro ao atualizar um produto', err))
             })
         })
         // Error
         .catch((err) => {
-            reject(sendError('Ocorreu um erro ao buscar o produto atualizado', err))
+            reject(sendErrorIntern('Ocorreu um erro ao buscar o produto atualizado', err))
         })
     });
 }
@@ -335,11 +298,7 @@ const del = (req, res) => {
         // Sucesso //
         .then(data => {
             if (data == null) {
-                return reject({
-                    code: environments.CODE.REQUEST,
-                    success: false,
-                    message: 'Esse produto não foi encontrado no banco de dados.'
-                })
+                return reject(sendErrorRequest('Esse produto não foi encontrado no banco de dados.'))
             }
 
             // Obtendo o produto e deletando //
@@ -353,22 +312,12 @@ const del = (req, res) => {
             })
             // Error //
             .catch((data) => {
-                reject({
-                    code: environments.code.INTERT,
-                    success: false,
-                    message: message,
-                    data: data
-                })
+                reject(sendErrorIntern('Ocorreu um erro ao buscar e deletar o produto na base de dados.', data))
             })
         })
         // Error //
         .catch((data) => {
-            reject({
-                code: environments.code.INTERT,
-                success: false,
-                message: message,
-                data: data
-            })
+            reject(sendErrorIntern('Ocorreu um erro ao buscar o produto na base de dados.', data))
         })
     })
 }
