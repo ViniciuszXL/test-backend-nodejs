@@ -1,0 +1,66 @@
+{
+    "type": "commonjs",
+    "name": "catalog-rest-api",
+    "version": "0.0.2",
+    "description": "RESTAPI para gerenciamento de catálogo de produtos",
+    "main": "main.js",
+    "scripts": {
+        "start": "node main.js",
+        "start-cluster": "pm2 start main.js -i 0",
+        "start-nodemon": "nodemon main.js",
+        "test": "node jest.startup.js",
+        "mocha": "mocha --exit"
+    },
+    "jest": {
+        "verbose": true,
+        "globals": {
+            "address": "http://127.0.0.1:4444"
+        },
+        "testEnvironment": "node",
+        "transform": {
+            "^.+\\.[t|j]sx?$": "babel-jest"
+        },
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json",
+            "node"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ViniciuszXL/test-backend-nodejs.git"
+    },
+    "author": "Marcus Vinícius",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ViniciuszXL/test-backend-nodejs/issues"
+    },
+    "homepage": "https://github.com/ViniciuszXL/test-backend-nodejs#readme",
+    "dependencies": {
+        "body-parser": "^1.19.1",
+        "cors": "^2.8.5",
+        "dotenv": "^14.3.0",
+        "express": "^4.17.2",
+        "http": "^0.0.1-security",
+        "mongoose": "^6.1.8",
+        "node": "^17.4.0",
+        "redis": "^3.1.2"
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-class-properties": "^7.16.7",
+        "@babel/plugin-transform-runtime": "^7.16.10",
+        "@babel/preset-env": "^7.16.11",
+        "babel-jest": "^27.4.6",
+        "babel-plugin-transform-runtime": "^6.23.0",
+        "chai": "^4.3.6",
+        "chai-http": "^4.3.0",
+        "jest": "^27.4.7",
+        "jest-cli": "^27.4.7",
+        "mocha": "^9.2.1",
+        "supertest": "^6.2.2"
+    }
+}
