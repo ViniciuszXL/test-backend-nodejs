@@ -118,46 +118,46 @@ class ProductRouterCommon {
 
                 // Verificando se o nome do produto está informado //
                 if (!title) {
-                    sendError(res, "O nome do produto não está informado! Campo 'title' faltando")
+                    this.sendError(res, "O nome do produto não está informado! Campo 'title' faltando")
                     return callback(true, null);
                 }
 
                 // Verificando se a descrição do produto está informada //
                 if (!description) {
-                    sendError(res, "A descrição do produto não está sendo informada! Campo 'description' faltando");
+                    this.sendError(res, "A descrição do produto não está sendo informada! Campo 'description' faltando");
                     return callback(true, null);
                 }
 
                 // Verificando se o preço do produto está informado //
                 if (!price) {
-                    sendError(res, "O preço do produto não está sendo informado! Campo 'price' faltando")
+                    this.sendError(res, "O preço do produto não está sendo informado! Campo 'price' faltando")
                     return callback(true, null);
                 } else {
                     // Verificando se o preço do produto é do tipo numérico //
                     if (typeof price != 'number') {
-                        sendError(res, "O preço do produto deve ser valor numérico")
+                        this.sendError(res, "O preço do produto deve ser valor numérico")
                         return callback(true, null);
                     }
                 }
 
                 // Verificando se a categoria do produto está informada //
                 if (!categoryId) {
-                    sendError(res, "A categoria do produto não está sendo informada! Campo 'categoryId' faltando")
+                    this.sendError(res, "A categoria do produto não está sendo informada! Campo 'categoryId' faltando")
                     return callback(true, null);
                 } else {
                     // Verificando se existe uma categoria com o ID informado //
                     Category.findById(categoryId)
                     .then(data => {
                         if (data == null) {
-                            sendError(res, `A categoria '${categoryId}' não existe no banco de dados!`);
+                            this.sendError(res, `A categoria '${categoryId}' não existe no banco de dados!`);
                             return callback(true, null);
                         }
+
+                        return callback(null, true);
                     }).catch(err => {
                         this.sendError(res, err)
                     })
                 }
-
-                return callback(null, true);
             },
 
             /**

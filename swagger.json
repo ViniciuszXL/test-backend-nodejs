@@ -1,0 +1,553 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Catálogo de Produtos",
+        "description": "RESTAPI de catálogo de produtos do desafio da AnotaAí",
+        "termsOfService": "https://anota.ai/",
+        "contact": {
+            "name": "Desenvolvedor",
+            "url": "https://viniciuszxl.github.io/",
+            "email": "marcusvinicius.mendonca@anota.ai"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/": {
+            "get": {
+                "summary": "Inicio",
+                "description": "Rota de início",
+                "tags": ["Index"],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Index"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/category": {
+            "post": {
+                "summary": "Cadastro de uma categoria",
+                "description": "Rota responsável por cadastrar uma nova categoria no sistema",
+                "tags": ["Category"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Category"
+                            },
+                            "examples": {
+                                "product": {
+                                    "value": {
+                                        "name": "Categoria teste"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Category not created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "Busca de categorias",
+                "description": "Rota responsável por buscar todas as categorias no sistema",
+                "tags": ["Category"],
+                "responses": {
+                    "500": {
+                        "description": "An error ocurred in server",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Categories"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualização de categoria",
+                "description": "Rota responsável por atualizar uma categoria",
+                "tags": ["Category"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID da categoria",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Category"
+                            },
+                            "examples": {
+                                "product": {
+                                    "value": {
+                                        "name": "Nova Categoria teste"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Category not updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/category/{id}": {
+            "delete": {
+                "summary": "Remover uma categoria",
+                "description": "Rota responsável por remover uma categoria",
+                "tags": ["Category"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da categoria",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Category not deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/product": {
+            "post": {
+                "summary": "Cadastro de um produto",
+                "description": "Rota responsável por cadastrar um novo produto no sistema",
+                "tags": ["Product"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Product"
+                            },
+                            "examples": {
+                                "product": {
+                                    "value": {
+                                        "title": "Combo 3x salada + fritas + pet 1,5L",
+                                        "description": "Um combo com possíbilidades incríveis. Tais como: Ficar gordo!",
+                                        "price": 27,
+                                        "categoryId": "category id here"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Product not created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "summary": "Busca de produtos",
+                "description": "Rota responsável por buscar produtos",
+                "tags": ["Product"],
+                "parameters": [
+                    {
+                        "name": "title",
+                        "in": "query",
+                        "description": "Título do produto"
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Descrição do produto"
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                               "schema": {
+                                   "type": "object",
+                                   "$ref": "#/components/schemas/Products"
+                               }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualização de um produto",
+                "description": "Rota responsável por atualizar um produto",
+                "tags": ["Product"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "ID do produto",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Product"
+                            },
+                            "examples": {
+                                "product": {
+                                    "value": {
+                                        "title": "Combo 3x salada + pet 1,5L",
+                                        "description": "Esse combo é dos bom hein. Vai perder essa promoção?",
+                                        "price": 23
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "400": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                               "schema": {
+                                   "type": "object",
+                                   "$ref": "#/components/schemas/Products"
+                               }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/product/{id}": {
+            "delete": {
+                "summary": "Remover um produto",
+                "description": "Rota responsável por remover um produto do sistema",
+                "tags": ["Product"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "Produto not deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/MessageResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CategorySearchResponse": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "__v": {
+                        "type": "integer"
+                    }
+                },
+                "xml": {
+                    "name": "categorySearchResponse"
+                }
+            },
+            "ProductSearchResponse": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "integer"
+                    },
+                    "categoryId": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    },
+                    "updatedAt": {
+                        "type": "string"
+                    },
+                    "__v": {
+                        "type": "integer"
+                    }
+                },
+                "xml": {
+                    "name": "productSearchResponse"
+                }
+            },
+            "MessageResponse": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Index": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "routes": {
+                        "type": "object",
+                        "properties": {
+                            "category": {
+                                "type": "string"
+                            },
+                            "products": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "Category": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Categories": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "array",
+                        "xml": {
+                            "wrapped": true
+                        },
+                        "items": {
+                            "xml": {
+                                "name": "categorySearchResponse"
+                            },
+                            "$ref": "#/components/schemas/CategorySearchResponse"
+                        }
+                    }
+                }
+            },
+            "Product": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "integer"
+                    },
+                    "categoryId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Products": {
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "data": {
+                        "type": "array",
+                        "xml": {
+                            "wrapped": true
+                        },
+                        "items": {
+                            "xml": {
+                                "name": "productSearchResponse"
+                            },
+                            "$ref": "#/components/schemas/ProductSearchResponse"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

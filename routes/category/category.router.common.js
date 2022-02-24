@@ -97,7 +97,7 @@ class CategoryRouterCommon {
              */
             sendError(res, message) {
                 return common.sendResponse(res, {
-                    code: environments.code.REQUEST,
+                    code: environments.CODE.REQUEST,
                     success: false,
                     message: message
                 })
@@ -118,7 +118,7 @@ class CategoryRouterCommon {
 
                 // Verificando se o nome da categoria está informada //
                 if (!name) {
-                    sendError(res, "O nome da categoria não está informado! Campo 'name' faltando")
+                    this.sendError(res, "O nome da categoria não está informado! Campo 'name' faltando")
                     return callback(true)
                 }
 

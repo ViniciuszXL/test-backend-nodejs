@@ -3,6 +3,10 @@ const express = require('express')
 const cors = require('cors')
 const bodyParser = require('body-parser');
 
+// Swagger //
+const swaggerUI = require('swagger-ui-express')
+const swaggerDocs = require('../../swagger.json');
+
 const environments = require("../../common/environments.js");
 
 class Server {
@@ -31,6 +35,9 @@ class Server {
                     allowHeaders: ['authorization'],
                     exposeHeaders: ['x-custom-header']
                 })
+
+                // Documentation //
+                app.use('/documentation', swaggerUI.serve, swaggerUI.setup(swaggerDocs))
 
                 // Habilitando o CORS no servidor //
                 app.use(_cors)
