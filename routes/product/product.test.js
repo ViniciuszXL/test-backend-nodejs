@@ -1,4 +1,4 @@
-import request from 'supertest';
+const request = require('supertest');
 
 // Local and global variables //
 let address = global.address,
@@ -236,7 +236,7 @@ describe('DELETE - Product', () => {
             expect(response.body.message).toBe('Produto deletado com sucesso.')
         })
     })
-''
+
     test('Deve tentar deletar um produto inexistente', () => {
         return request(address)
 
